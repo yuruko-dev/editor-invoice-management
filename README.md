@@ -1,6 +1,19 @@
 # 編集チーム請求書管理システム
 
-Google スプレッドシート・フォーム・Drive を組み合わせて、業務委託編集者からの毎月の請求書提出を自動化する Google Apps Script (GAS) 製ツールです。
+業務委託の編集者から毎月提出される請求書を、Googleフォーム経由での提出・Driveへの自動格納・提出状況の自動集計まで一気通貫で処理する、Google Apps Script (GAS) 製の業務効率化ツールです。
+
+![Google Apps Script](https://img.shields.io/badge/Google_Apps_Script-4285F4?style=flat-square&logo=googleappsscript&logoColor=white)
+![Google Sheets](https://img.shields.io/badge/Google_Sheets-34A853?style=flat-square&logo=googlesheets&logoColor=white)
+![Google Drive](https://img.shields.io/badge/Google_Drive-FBBC04?style=flat-square&logo=googledrive&logoColor=white)
+![Google Forms](https://img.shields.io/badge/Google_Forms-7248B9?style=flat-square&logo=googleforms&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)
+
+## このツールが解決できること
+
+- 📂 バラバラに届く請求書ファイルを、**月ごとのDriveフォルダへ自動で整理**
+- ✅ 誰が提出済みで誰が未提出かを**手作業で確認する必要をなくす**
+- 📊 対象人数・提出済み人数・提出率を**スプレッドシート上でリアルタイムに自動集計**
 
 ## 背景・課題
 
@@ -20,15 +33,27 @@ Google スプレッドシート・フォーム・Drive を組み合わせて、�
 - **カスタムメニュー**: スプレッドシート上のメニューから初期セットアップ・フォーム連携・選択肢更新・再集計をワンクリックで実行
 - **エラーログ**: 処理中の例外を専用シートに記録し、運用中の不具合追跡を容易に
 
+## スクリーンショット
+
+> 画像は準備中です。以下のパスに配置すると、このセクションに自動で表示されます。
+
+| 提出用フォーム | 提出状況シート | Drive自動格納 |
+| :---: | :---: | :---: |
+| ![提出用フォーム](docs/images/form.png) | ![提出状況シート](docs/images/status-sheet.png) | ![Drive自動格納](docs/images/drive-folders.png) |
+
+- `docs/images/form.png` : 編集者が請求書を提出するGoogleフォーム
+- `docs/images/status-sheet.png` : 提出済み／未提出・提出率を自動集計する「提出状況」シート
+- `docs/images/drive-folders.png` : 対象月ごとに自動整理されたDriveフォルダ
+
 ## 処理の流れ
 
 ```mermaid
 flowchart TD
-    A[編集者がGoogleフォームに\n請求書ファイルを添えて提出] --> B[onFormSubmit トリガー起動]
-    B --> C[Driveの対象月フォルダへ\nファイルを自動移動]
-    B --> D[提出状況シートを再集計]
-    D --> E[提出済み/未提出リストと\n提出率を更新]
-    F[提出状況シートのB1セル\n対象月を手動変更] --> G[onEdit トリガー起動]
+    A["編集者がGoogleフォームに<br/>請求書ファイルを添えて提出"] --> B["onFormSubmit トリガー起動"]
+    B --> C["Driveの対象月フォルダへ<br/>ファイルを自動移動"]
+    B --> D["提出状況シートを再集計"]
+    D --> E["提出済み/未提出リストと<br/>提出率を更新"]
+    F["提出状況シートのB1セル<br/>対象月を手動変更"] --> G["onEdit トリガー起動"]
     G --> D
 ```
 
@@ -36,20 +61,36 @@ flowchart TD
 
 ```
 .
-├── AppsScript/              # Google Apps Script プロジェクト本体（clasp管理）
-│   ├── appsscript.json      # マニフェスト（タイムゾーン・OAuthスコープ等）
-│   ├── .clasp.json.example  # clasp設定のテンプレート（実ファイルは.gitignore対象）
-│   ├── Config.gs            # シート名・フォーム項目名などの定数定義
-│   ├── Setup.gs             # 初期セットアップ処理
-│   ├── Menu.gs              # カスタムメニュー・フォーム選択肢同期
-│   ├── CreateForm.gs        # Googleフォームの新規作成・連携
-│   ├── FormTrigger.gs       # フォーム送信時トリガー処理
-│   ├── DriveUtil.gs         # Driveフォルダ操作（月別フォルダの作成・ファイル移動）
-│   ├── StatusUpdater.gs     # 提出状況シートの集計ロジック
-│   └── ErrorLog.gs          # エラーログ記録
+├── AppsScript/
+│   ├── appsscript.json
+│   ├── .clasp.json.example
+│   ├── Config.gs
+│   ├── Setup.gs
+│   ├── Menu.gs
+│   ├── CreateForm.gs
+│   ├── FormTrigger.gs
+│   ├── DriveUtil.gs
+│   ├── StatusUpdater.gs
+│   └── ErrorLog.gs
+├── docs/
+│   └── images/
 ├── LICENSE
 └── README.md
 ```
+
+各ファイルの役割:
+
+- `AppsScript/appsscript.json` : マニフェスト（タイムゾーン・OAuthスコープ等）
+- `AppsScript/.clasp.json.example` : clasp設定のテンプレート（実ファイルは`.gitignore`対象）
+- `AppsScript/Config.gs` : シート名・フォーム項目名などの定数定義
+- `AppsScript/Setup.gs` : 初期セットアップ処理
+- `AppsScript/Menu.gs` : カスタムメニュー・フォーム選択肢同期
+- `AppsScript/CreateForm.gs` : Googleフォームの新規作成・連携
+- `AppsScript/FormTrigger.gs` : フォーム送信時トリガー処理
+- `AppsScript/DriveUtil.gs` : Driveフォルダ操作（月別フォルダの作成・ファイル移動）
+- `AppsScript/StatusUpdater.gs` : 提出状況シートの集計ロジック
+- `AppsScript/ErrorLog.gs` : エラーログ記録
+- `docs/images/` : README用スクリーンショット格納先
 
 ## 技術スタック
 
