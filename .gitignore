@@ -1,0 +1,20 @@
+# clasp（Google Apps Script CLI）のローカル設定
+# scriptId など環境固有の情報を含むため公開しない
+AppsScript/.clasp.json
+.clasprc.json
+
+# ログ・ビルド成果物
+*.log
+.clasp-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Node（将来 npm 等を使う場合に備えて）
+node_modules/
